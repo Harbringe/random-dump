@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IntelLedger - All Documentation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0a0a0f;
+            color: #e0e0e0;
+            overflow-x: hidden;
+        }
+
+        #three-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        .content {
+            position: relative;
+            z-index: 1;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .doc-selector {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            z-index: 1000;
+        }
+
+        select {
+            padding: 1rem 2rem;
+            background: rgba(102, 126, 234, 0.2);
+            border: 2px solid #667eea;
+            border-radius: 50px;
+            color: #667eea;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        select:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .hero {
+            min-height: 60vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+
+        h1 {
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 900;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+        }
+
+        h2 {
+            font-size: clamp(1.8rem, 4vw, 2.5rem);
+            font-weight: 700;
+            color: #fff;
+            margin: 3rem 0 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid #667eea;
+        }
+
+        h3 {
+            font-size: clamp(1.3rem, 3vw, 1.8rem);
+            font-weight: 600;
+            color: #a8b2d1;
+            margin: 2rem 0 1rem;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2rem;
+            margin: 2rem 0;
+            transition: all 0.4s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.3);
+            border-color: rgba(102, 126, 234, 0.5);
+        }
+
+        pre {
+            background: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 10px;
+            padding: 1.5rem;
+            overflow-x: auto;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin: 1rem 0;
+        }
+
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            background: rgba(102, 126, 234, 0.1);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        th {
+            background: rgba(102, 126, 234, 0.2);
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        tr:hover {
+            background: rgba(102, 126, 234, 0.05);
+        }
+
+        ul, ol {
+            margin: 1rem 0 1rem 2rem;
+        }
+
+        li {
+            margin: 0.5rem 0;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 4rem;
+            font-size: 1.5rem;
+            color: #667eea;
+        }
+
+        .back-btn {
+            position: fixed;
+            top: 2rem;
+            left: 2rem;
+            padding: 1rem 2rem;
+            background: rgba(102, 126, 234, 0.2);
+            border: 2px solid #667eea;
+            border-radius: 50px;
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .back-btn:hover {
+            background: #667eea;
+            color: white;
+            transform: translateX(-5px);
+        }
+    </style>
+</head>
+<body>
+    <canvas id="three-canvas"></canvas>
+
+    <a href="index.html" class="back-btn">
+        <i class="fas fa-arrow-left"></i> Home
+    </a>
+
+    <div class="doc-selector">
+        <select id="docSelect" onchange="loadDocument(this.value)">
+            <option value="">Select Document...</option>
+            <option value="IntelLedger-Industry-Standard.md">Industry Standard</option>
+            <option value="IntelLedger-Pragmatic-MVP.md">Pragmatic MVP</option>
+            <option value="IntelLedger-ProofPerl-Architecture.md">ProofPerl Architecture</option>
+            <option value="SystemDesign-Industry-Standard.md">System Design - Industry</option>
+            <option value="SystemDesign-Pragmatic-MVP.md">System Design - MVP</option>
+            <option value="SystemDesign-ProofPerl.md">System Design - ProofPerl</option>
+            <option value="ProofPerl-vs-MOI-Comparison.md">ProofPerl vs MOI</option>
+            <option value="README.md">README</option>
+        </select>
+    </div>
+
+    <div class="content">
+        <div class="hero">
+            <h1>IntelLedger Documentation</h1>
+            <p style="font-size: 1.5rem; color: #a8b2d1;">Select a document above to view</p>
+        </div>
+        <div id="markdown-content" class="loading">
+            <i class="fas fa-file-alt fa-3x"></i>
+            <p>Select a document from the dropdown above</p>
+        </div>
+    </div>
+
+    <script>
+        // Three.js background
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ 
+            canvas: document.getElementById('three-canvas'),
+            alpha: true,
+            antialias: true
+        });
+        
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        camera.position.z = 5;
+
+        // Particles
+        const particlesGeometry = new THREE.BufferGeometry();
+        const particlesCount = 1500;
+        const posArray = new Float32Array(particlesCount * 3);
+
+        for(let i = 0; i < particlesCount * 3; i++) {
+            posArray[i] = (Math.random() - 0.5) * 15;
+        }
+
+        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+
+        const particlesMaterial = new THREE.PointsMaterial({
+            size: 0.02,
+            color: 0x667eea,
+            transparent: true,
+            opacity: 0.8,
+            blending: THREE.AdditiveBlending
+        });
+
+        const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+        scene.add(particlesMesh);
+
+        let mouseX = 0;
+        let mouseY = 0;
+
+        document.addEventListener('mousemove', (event) => {
+            mouseX = (event.clientX / window.innerWidth) * 2 - 1;
+            mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
+        });
+
+        function animate() {
+            requestAnimationFrame(animate);
+            particlesMesh.rotation.y += 0.001;
+            particlesMesh.rotation.x += 0.0005;
+            camera.position.x += (mouseX * 0.5 - camera.position.x) * 0.05;
+            camera.position.y += (mouseY * 0.5 - camera.position.y) * 0.05;
+            camera.lookAt(scene.position);
+            renderer.render(scene, camera);
+        }
+
+        animate();
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // Load markdown
+        async function loadDocument(filename) {
+            if (!filename) return;
+            
+            const content = document.getElementById('markdown-content');
+            content.innerHTML = '<div class="loading"><i class="fas fa-spinner fa-spin fa-3x"></i><p>Loading...</p></div>';
+            
+            try {
+                const response = await fetch(filename);
+                const markdown = await response.text();
+                const html = marked.parse(markdown);
+                content.innerHTML = html;
+                
+                // Animate content
+                gsap.from('#markdown-content > *', {
+                    y: 50,
+                    opacity: 0,
+                    duration: 0.8,
+                    stagger: 0.1,
+                    ease: 'power3.out'
+                });
+            } catch (error) {
+                content.innerHTML = `<div class="card"><h2>Error Loading Document</h2><p>${error.message}</p></div>`;
+            }
+        }
+
+        // Check URL parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const doc = urlParams.get('doc');
+        if (doc) {
+            document.getElementById('docSelect').value = doc;
+            loadDocument(doc);
+        }
+    </script>
+</body>
+</html>
