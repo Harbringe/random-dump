@@ -3,52 +3,1352 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IntelLedger & ProofPerl</title>
+    <title>IntelLedger - Three Architectures</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            max-width: 800px;
-            margin: 50px auto;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            background: #0a0a0a;
+        }
+        
+        #particles-js {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 0;
+        }
+        
+        .content-wrapper {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            background-size: 200% 200%;
+            animation: gradientShift 15s ease infinite;
+        }
+        
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        }
+        
+        .glass-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transform: translateY(-10px);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .neon-text {
+            text-shadow: 0 0 10px rgba(102, 126, 234, 0.8),
+                         0 0 20px rgba(102, 126, 234, 0.6),
+                         0 0 30px rgba(102, 126, 234, 0.4);
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            background-size: 200% 200%;
+            animation: gradientShift 5s ease infinite;
+        }
+        
+        .floating {
+            animation: floating 6s ease-in-out infinite;
+        }
+        
+        @keyframes floating {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            25% { transform: translateY(-20px) rotate(2deg); }
+            50% { transform: translateY(-10px) rotate(-2deg); }
+            75% { transform: translateY(-15px) rotate(1deg); }
+        }
+        
+        .pulse-glow {
+            animation: pulseGlow 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulseGlow {
+            0%, 100% {
+                box-shadow: 0 0 20px rgba(102, 126, 234, 0.4),
+                           0 0 40px rgba(102, 126, 234, 0.2);
+            }
+            50% {
+                box-shadow: 0 0 30px rgba(102, 126, 234, 0.6),
+                           0 0 60px rgba(102, 126, 234, 0.4);
+            }
+        }
+        
+        .tech-badge {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.2) 100%);
+            border: 1px solid rgba(102, 126, 234, 0.4);
+            transition: all 0.3s ease;
+        }
+        
+        .tech-badge:hover {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.4) 0%, rgba(118, 75, 162, 0.4) 100%);
+            border: 1px solid rgba(102, 126, 234, 0.6);
+            transform: scale(1.1);
+        }
+        
+        .architecture-card {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .architecture-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                45deg,
+                transparent,
+                rgba(255, 255, 255, 0.1),
+                transparent
+            );
+            transform: rotate(45deg);
+            transition: all 0.6s;
+        }
+        
+        .architecture-card:hover::before {
+            left: 100%;
+        }
+        
+        .code-block {
+            background: #1e1e1e;
+            border-radius: 12px;
             padding: 20px;
-            background: #f5f5f5;
+            font-family: 'JetBrains Mono', monospace;
+            position: relative;
+            overflow: hidden;
         }
-        .container {
-            background: white;
-            padding: 40px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        
+        .code-block::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 30px;
+            background: #2d2d2d;
+            border-bottom: 1px solid #404040;
         }
-        h1 {
-            color: #333;
-            margin-bottom: 30px;
+        
+        .typing-effect {
+            overflow: hidden;
+            border-right: 2px solid #667eea;
+            white-space: nowrap;
+            animation: typing 3.5s steps(40, end), blink-caret 0.75s step-end infinite;
         }
-        .links {
+        
+        @keyframes typing {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+        
+        @keyframes blink-caret {
+            from, to { border-color: transparent; }
+            50% { border-color: #667eea; }
+        }
+        
+        .metric-bar {
+            position: relative;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .metric-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .metric-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255, 255, 255, 0.3),
+                transparent
+            );
+            animation: shimmer 2s infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        .scroll-indicator {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
+            40% { transform: translateX(-50%) translateY(-20px); }
+            60% { transform: translateX(-50%) translateY(-10px); }
+        }
+        
+        .comparison-table {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+        
+        .comparison-table tr:hover {
+            background: rgba(102, 126, 234, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .feature-icon {
+            width: 60px;
+            height: 60px;
             display: flex;
-            flex-direction: column;
-            gap: 15px;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-size: 24px;
+            margin: 0 auto 16px;
+            position: relative;
         }
-        a {
-            display: block;
-            padding: 15px 20px;
-            background: #0066cc;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            transition: background 0.3s;
+        
+        .feature-icon::before {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border-radius: 50%;
+            padding: 4px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            animation: rotate 3s linear infinite;
         }
-        a:hover {
-            background: #0052a3;
+        
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>IntelLedger & ProofPerl Documentation</h1>
-        <div class="links">
-            <a href="intelledger.html">🔷 IntelLedger</a>
-            <a href="proofperl.html">ProofPerl</a>
-            <a href="proofperl-extras.html">ProofPerl Extras</a>
-        </div>
+    <!-- Particles Background -->
+    <div id="particles-js"></div>
+    
+    <div class="content-wrapper">
+        
+        <!-- Hero Section -->
+        <section class="gradient-bg min-h-screen flex items-center justify-center relative overflow-hidden">
+            <div class="container mx-auto px-4 py-20 text-center">
+                <!-- Animated Logo -->
+                <div class="floating mb-8">
+                    <lottie-player
+                        src="https://assets2.lottiefiles.com/packages/lf20_qp1q7mct.json"
+                        background="transparent"
+                        speed="1"
+                        style="width: 200px; height: 200px; margin: 0 auto;"
+                        loop
+                        autoplay>
+                    </lottie-player>
+                </div>
+                
+                <h1 class="text-7xl md:text-9xl font-black text-white mb-6 neon-text hero-title">
+                    IntelLedger
+                </h1>
+                <p class="text-2xl md:text-4xl text-white/90 mb-4 hero-subtitle">
+                    Three Architectures. One Vision.
+                </p>
+                <p class="text-lg md:text-xl text-white/70 max-w-3xl mx-auto mb-12 hero-description">
+                    Choose your path: <span class="text-blue-300 font-semibold">Industry Standard</span> for speed, 
+                    <span class="text-green-300 font-semibold">Pragmatic MVP</span> for simplicity, 
+                    or <span class="text-orange-300 font-semibold">ProofPerl</span> for mathematical certainty.
+                </p>
+                
+                <div class="flex flex-wrap justify-center gap-4 mb-12">
+                    <button class="glass-card px-8 py-4 rounded-full text-white font-semibold hover:scale-105 transition-all cta-button">
+                        <i class="fas fa-rocket mr-2"></i> Get Started
+                    </button>
+                    <button class="glass-card px-8 py-4 rounded-full text-white font-semibold hover:scale-105 transition-all cta-button">
+                        <i class="fas fa-book mr-2"></i> Documentation
+                    </button>
+                    <button class="glass-card px-8 py-4 rounded-full text-white font-semibold hover:scale-105 transition-all cta-button">
+                        <i class="fab fa-github mr-2"></i> GitHub
+                    </button>
+                </div>
+                
+                <!-- Stats Counter -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto stats-grid">
+                    <div class="glass-card p-6 rounded-2xl pulse-glow">
+                        <div class="text-4xl font-bold text-white counter" data-target="3">0</div>
+                        <div class="text-white/70 text-sm mt-2">Architectures</div>
+                    </div>
+                    <div class="glass-card p-6 rounded-2xl pulse-glow">
+                        <div class="text-4xl font-bold text-white counter" data-target="99">0</div>
+                        <div class="text-white/70 text-sm mt-2">% Uptime</div>
+                    </div>
+                    <div class="glass-card p-6 rounded-2xl pulse-glow">
+                        <div class="text-4xl font-bold text-white counter" data-target="200">0</div>
+                        <div class="text-white/70 text-sm mt-2">ms Response</div>
+                    </div>
+                    <div class="glass-card p-6 rounded-2xl pulse-glow">
+                        <div class="text-4xl font-bold text-white counter" data-target="1000">0</div>
+                        <div class="text-white/70 text-sm mt-2">+ Devices</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Scroll Indicator -->
+            <div class="scroll-indicator">
+                <i class="fas fa-chevron-down text-white text-2xl"></i>
+            </div>
+        </section>
+
+        <!-- Architecture Cards Section -->
+        <section class="py-20 bg-gradient-to-b from-[#0a0a0a] to-[#1a1a2e]">
+            <div class="container mx-auto px-4">
+                <h2 class="text-5xl md:text-6xl font-black text-center gradient-text mb-4 section-title">
+                    Choose Your Architecture
+                </h2>
+                <p class="text-center text-gray-400 text-xl mb-16 max-w-2xl mx-auto">
+                    Each architecture is designed for different needs and constraints
+                </p>
+                
+                <div class="grid md:grid-cols-3 gap-8 architecture-cards">
+                    <!-- Industry Standard Card -->
+                    <div class="glass-card architecture-card rounded-3xl p-8 transform hover:scale-105 transition-all duration-500">
+                        <div class="feature-icon bg-gradient-to-br from-blue-500 to-purple-600 pulse-glow">
+                            <i class="fas fa-bolt text-white"></i>
+                        </div>
+                        
+                        <h3 class="text-3xl font-bold text-white text-center mb-2">Industry Standard</h3>
+                        <p class="text-gray-400 text-center text-sm mb-6">Battle-tested enterprise stack</p>
+                        
+                        <div class="space-y-4 mb-6">
+                            <div class="flex items-center justify-between text-white">
+                                <span class="text-gray-400"><i class="far fa-clock mr-2"></i>Timeline</span>
+                                <span class="font-bold text-blue-400">6-9 months</span>
+                            </div>
+                            <div class="flex items-center justify-between text-white">
+                                <span class="text-gray-400"><i class="fas fa-users mr-2"></i>Team Size</span>
+                                <span class="font-bold text-blue-400">8-10 people</span>
+                            </div>
+                            <div class="flex items-center justify-between text-white">
+                                <span class="text-gray-400"><i class="fas fa-dollar-sign mr-2"></i>Monthly Cost</span>
+                                <span class="font-bold text-blue-400">$12-15k</span>
+                            </div>
+                        </div>
+                        
+                        <div class="flex flex-wrap gap-2 mb-6">
+                            <span class="tech-badge px-3 py-1 rounded-full text-xs font-medium text-blue-300">AWS</span>
+                            <span class="tech-badge px-3 py-1 rounded-full text-xs font-medium text-blue-300">Kubernetes</span>
+                            <span class="tech-badge px-3 py-1 rounded-full text-xs font-medium text-blue-300">Next.js</span>
+                            <span class="tech-badge px-3 py-1 rounded-full text-xs font-medium text-blue-300">Polygon</span>
+                            <span class="tech-badge px-3 py-1 rounded-full text-xs font-medium text-blue-300">SageMaker</span>
+                            <span class="tech-badge px-3 py-1 rounded-full text-xs font-medium text-blue-300">Kafka</span>
+                        </div>
+                        
+                        <button class="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 rounded-xl font-bold hover:shadow-2xl transition-all hover:scale-105">
+                            <i class="fas fa-arrow-right mr-2"></i> Explore Details
+                        </button>
+                    </div>
+                    
+                    <!-- Pragmatic MVP Card -->
+                    <div class="glass-card architecture-card rounded-3xl p-8 transform hover:scale-105 transition-all duration-500 border-2 border-green-500/50">
+                        <div class="absolute top-4 right-4 bg-green-500 text-white text-xs px-3 py-1 rounded-full font-bold">
+                            RECOMMENDED
+                        </div>
+                        
+                        <div class="feature-icon bg-gradient-to-br from-green-500 to-teal-600 pulse-glow">
+                            <i class="fas fa-rocket text-white"></i>
+                        </div>
+                        
+                        <h3 class="text-3xl font-bold text-white text-center mb-2">Pragmatic MVP</h3>
+                        <p class="text-gray-400 text-center text-sm mb-6">Fast, simple, cost-effective</p>
+                        
+                        <div class="space-y-4 mb-6">
+                            <div class="flex items-center justify-between text-white">
+                                <span class="text-gray-400"><i class="far fa-clock mr-2"></i>Timeline</span>
+                                <span class="font-bold text-green-400">3-4 months</span>
+                            </div>
+                            <div class="flex items-center justify-between text-white">
+                                <span class="text-gray-400"><i class="fas fa-users mr-2"></i>Team Size</span>
+                                <span class="font-bold text-green-400">2-3 people</span>
+                            </div>
+                            <div class="flex items-center justify-between text-white">
+                                <span class="text-gray-400"><i class="fas fa-dollar-sign mr-2"></i>Monthly Cost</span>
+                                <span class="font-bold text-green-400">$5</span>
+                            </div>
+                        </div>
+                        
+                        <div class="flex flex-wrap gap-2 mb-6">
+                            <span class="tech-badge px-3 py-1 rounded-full text-xs font-medium text-green-300">Vercel</span>
+                            <span class="tech-badge px-3 py-1 rounded-full text-xs font-medium text-green-300">Railway</span>
+                            <span class="tech-badge px-3 py-1 rounded-full text-xs font-medium text-green-300">tRPC</span>
+                            <span class="tech-badge px-3 py-1 rounded-full text-xs font-medium text-green-300">ESP32</span>
+                            <span class="tech-badge px-3 py-1 rounded-full text-xs font-medium text-green-300">Supabase</span>
+                            <span class="tech-badge px-3 py-1 rounded-full text-xs font-medium text-green-300">FastAPI</span>
+                        </div>
+                        
+                        <button class="w-full bg-gradient-to-r from-green-500 to-teal-600 text-white py-4 rounded-xl font-bold hover:shadow-2xl transition-all hover:scale-105">
+                            <i class="fas fa-arrow-right mr-2"></i> Explore Details
+                        </button>
+                    </div>
+                    
+                    <!-- ProofPerl Card -->
+                    <div class="glass-card architecture-card rounded-3xl p-8 transform hover:scale-105 transition-all duration-500">
+                        <div class="feature-icon bg-gradient-to-br from-orange-500 to-red-600 pulse-glow">
+                            <i class="fas fa-shield-alt text-white"></i>
+                        </div>
+                        
+                        <h3 class="text-3xl font-bold text-white text-center mb-2">ProofPerl</h3>
+                        <p class="text-gray-400 text-center text-sm mb-6">Formally verified security</p>
+                        
+                        <div class="space-y-4 mb-6">
+                            <div class="flex items-center justify-between text-white">
+                                <span class="text-gray-400"><i class="far fa-clock mr-2"></i>Timeline</span>
+                                <span class="font-bold text-orange-400">12-18 months</span>
+                            </div>
+                            <div class="flex items-center justify-between text-white">
+                                <span class="text-gray-400"><i class="fas fa-users mr-2"></i>Team Size</span>
+                                <span class="font-bold text-orange-400">5-6 people</span>
+                            </div>
+                            <div class="flex items-center justify-between text-white">
+                                <span class="text-gray-400"><i class="fas fa-dollar-sign mr-2"></i>Monthly Cost</span>
+                                <span class="font-bold text-orange-400">$3.8k</span>
+                            </div>
+                        </div>
+                        
+                        <div class="flex flex-wrap gap-2 mb-6">
+                            <span class="tech-badge px-3 py-1 rounded-full text-xs font-medium text-orange-300">Haskell</span>
+                            <span class="tech-badge px-3 py-1 rounded-full text-xs font-medium text-orange-300">RISC-V</span>
+                            <span class="tech-badge px-3 py-1 rounded-full text-xs font-medium text-orange-300">Halo2</span>
+                            <span class="tech-badge px-3 py-1 rounded-full text-xs font-medium text-orange-300">Substrate</span>
+                            <span class="tech-badge px-3 py-1 rounded-full text-xs font-medium text-orange-300">Coq</span>
+                            <span class="tech-badge px-3 py-1 rounded-full text-xs font-medium text-orange-300">Guix</span>
+                        </div>
+                        
+                        <button class="w-full bg-gradient-to-r from-orange-500 to-red-600 text-white py-4 rounded-xl font-bold hover:shadow-2xl transition-all hover:scale-105">
+                            <i class="fas fa-arrow-right mr-2"></i> Explore Details
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Comparison Table Section -->
+        <section class="py-20 bg-[#0a0a0a]">
+            <div class="container mx-auto px-4">
+                <h2 class="text-5xl md:text-6xl font-black text-center gradient-text mb-4">
+                    Side-by-Side Comparison
+                </h2>
+                <p class="text-center text-gray-400 text-xl mb-16 max-w-2xl mx-auto">
+                    Compare features, costs, and capabilities at a glance
+                </p>
+                
+                <div class="comparison-table overflow-x-auto">
+                    <table class="w-full text-white">
+                        <thead>
+                            <tr class="border-b border-white/10">
+                                <th class="text-left py-6 px-6 font-bold text-gray-300">Feature</th>
+                                <th class="text-center py-6 px-6 font-bold text-blue-400">
+                                    <i class="fas fa-bolt mb-2 block text-2xl"></i>
+                                    Industry Standard
+                                </th>
+                                <th class="text-center py-6 px-6 font-bold text-green-400">
+                                    <i class="fas fa-rocket mb-2 block text-2xl"></i>
+                                    Pragmatic MVP
+                                </th>
+                                <th class="text-center py-6 px-6 font-bold text-orange-400">
+                                    <i class="fas fa-shield-alt mb-2 block text-2xl"></i>
+                                    ProofPerl
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="border-b border-white/5 hover:bg-white/5 transition-all">
+                                <td class="py-4 px-6 font-medium text-gray-300">
+                                    <i class="fas fa-lock mr-2 text-purple-400"></i>Security Level
+                                </td>
+                                <td class="text-center py-4 px-6">
+                                    <div class="flex justify-center gap-1">
+                                        <i class="fas fa-star text-yellow-400"></i>
+                                        <i class="fas fa-star text-yellow-400"></i>
+                                        <i class="fas fa-star text-yellow-400"></i>
+                                        <i class="fas fa-star text-yellow-400"></i>
+                                        <i class="far fa-star text-gray-600"></i>
+                                    </div>
+                                </td>
+                                <td class="text-center py-4 px-6">
+                                    <div class="flex justify-center gap-1">
+                                        <i class="fas fa-star text-yellow-400"></i>
+                                        <i class="fas fa-star text-yellow-400"></i>
+                                        <i class="fas fa-star text-yellow-400"></i>
+                                        <i class="far fa-star text-gray-600"></i>
+                                        <i class="far fa-star text-gray-600"></i>
+                                    </div>
+                                </td>
+                                <td class="text-center py-4 px-6">
+                                    <div class="flex justify-center gap-1">
+                                        <i class="fas fa-star text-yellow-400"></i>
+                                        <i class="fas fa-star text-yellow-400"></i>
+                                        <i class="fas fa-star text-yellow-400"></i>
+                                        <i class="fas fa-star text-yellow-400"></i>
+                                        <i class="fas fa-star text-yellow-400"></i>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="border-b border-white/5 hover:bg-white/5 transition-all">
+                                <td class="py-4 px-6 font-medium text-gray-300">
+                                    <i class="fas fa-clock mr-2 text-purple-400"></i>Time to Market
+                                </td>
+                                <td class="text-center py-4 px-6 text-blue-300">Medium</td>
+                                <td class="text-center py-4 px-6 text-green-300 font-bold">Fast ⚡</td>
+                                <td class="text-center py-4 px-6 text-orange-300">Slow</td>
+                            </tr>
+                            <tr class="border-b border-white/5 hover:bg-white/5 transition-all">
+                                <td class="py-4 px-6 font-medium text-gray-300">
+                                    <i class="fas fa-chart-line mr-2 text-purple-400"></i>Scalability
+                                </td>
+                                <td class="text-center py-4 px-6 text-blue-300 font-bold">Excellent</td>
+                                <td class="text-center py-4 px-6 text-green-300">Good</td>
+                                <td class="text-center py-4 px-6 text-orange-300 font-bold">Excellent</td>
+                            </tr>
+                            <tr class="border-b border-white/5 hover:bg-white/5 transition-all">
+                                <td class="py-4 px-6 font-medium text-gray-300">
+                                    <i class="fas fa-user-tie mr-2 text-purple-400"></i>Hiring Difficulty
+                                </td>
+                                <td class="text-center py-4 px-6 text-green-300">Easy</td>
+                                <td class="text-center py-4 px-6 text-green-300">Easy</td>
+                                <td class="text-center py-4 px-6 text-red-300">Hard</td>
+                            </tr>
+                            <tr class="border-b border-white/5 hover:bg-white/5 transition-all">
+                                <td class="py-4 px-6 font-medium text-gray-300">
+                                    <i class="fas fa-check-double mr-2 text-purple-400"></i>Formal Verification
+                                </td>
+                                <td class="text-center py-4 px-6"><i class="fas fa-times text-red-400 text-xl"></i></td>
+                                <td class="text-center py-4 px-6"><i class="fas fa-times text-red-400 text-xl"></i></td>
+                                <td class="text-center py-4 px-6"><i class="fas fa-check text-green-400 text-xl"></i></td>
+                            </tr>
+                            <tr class="border-b border-white/5 hover:bg-white/5 transition-all">
+                                <td class="py-4 px-6 font-medium text-gray-300">
+                                    <i class="fas fa-dollar-sign mr-2 text-purple-400"></i>Setup Cost
+                                </td>
+                                <td class="text-center py-4 px-6 text-blue-300">$388k</td>
+                                <td class="text-center py-4 px-6 text-green-300 font-bold">$100</td>
+                                <td class="text-center py-4 px-6 text-orange-300">$1.93M</td>
+                            </tr>
+                            <tr class="hover:bg-white/5 transition-all">
+                                <td class="py-4 px-6 font-medium text-gray-300">
+                                    <i class="fas fa-bullseye mr-2 text-purple-400"></i>Best For
+                                </td>
+                                <td class="text-center py-4 px-6 text-sm text-blue-300">Enterprise scale</td>
+                                <td class="text-center py-4 px-6 text-sm text-green-300">Proof of concept</td>
+                                <td class="text-center py-4 px-6 text-sm text-orange-300">Critical systems</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Industry Standard Details -->
+        <section id="industry-standard" class="py-20 bg-gradient-to-b from-[#1a1a2e] to-[#0a0a0a]">
+            <div class="container mx-auto px-4">
+                <div class="text-center mb-16">
+                    <div class="inline-block mb-6">
+                        <lottie-player
+                            src="https://assets9.lottiefiles.com/packages/lf20_w51pcehl.json"
+                            background="transparent"
+                            speed="1"
+                            style="width: 150px; height: 150px;"
+                            loop
+                            autoplay>
+                        </lottie-player>
+                    </div>
+                    <h2 class="text-5xl md:text-6xl font-black gradient-text mb-4">
+                        Industry Standard Architecture
+                    </h2>
+                    <p class="text-xl text-gray-400 max-w-3xl mx-auto">
+                        Production-grade implementation using battle-tested enterprise technologies
+                    </p>
+                </div>
+                
+                <div class="grid md:grid-cols-2 gap-8 mb-12">
+                    <!-- Architecture Layers -->
+                    <div class="glass-card rounded-2xl p-8">
+                        <h3 class="text-3xl font-bold text-white mb-6 flex items-center">
+                            <i class="fas fa-layer-group mr-3 text-blue-400"></i>
+                            Architecture Layers
+                        </h3>
+                        <div class="space-y-4">
+                            <div class="flex items-start p-4 bg-white/5 rounded-lg hover:bg-white/10 transition-all">
+                                <i class="fas fa-microchip text-blue-400 text-xl mr-4 mt-1"></i>
+                                <div>
+                                    <div class="font-bold text-white mb-1">IoT Edge Layer</div>
+                                    <div class="text-sm text-gray-400">ESP32-S3, AWS IoT Core, Greengrass</div>
+                                </div>
+                            </div>
+                            <div class="flex items-start p-4 bg-white/5 rounded-lg hover:bg-white/10 transition-all">
+                                <i class="fas fa-brain text-purple-400 text-xl mr-4 mt-1"></i>
+                                <div>
+                                    <div class="font-bold text-white mb-1">ML Layer</div>
+                                    <div class="text-sm text-gray-400">SageMaker, TorchServe, MLflow</div>
+                                </div>
+                            </div>
+                            <div class="flex items-start p-4 bg-white/5 rounded-lg hover:bg-white/10 transition-all">
+                                <i class="fas fa-key text-indigo-400 text-xl mr-4 mt-1"></i>
+                                <div>
+                                    <div class="font-bold text-white mb-1">ZKP Layer</div>
+                                    <div class="text-sm text-gray-400">Circom, SnarkJS, GPU Cluster</div>
+                                </div>
+                            </div>
+                            <div class="flex items-start p-4 bg-white/5 rounded-lg hover:bg-white/10 transition-all">
+                                <i class="fas fa-cube text-cyan-400 text-xl mr-4 mt-1"></i>
+                                <div>
+                                    <div class="font-bold text-white mb-1">Blockchain Layer</div>
+                                    <div class="text-sm text-gray-400">Polygon L2, The Graph, Hardhat</div>
+                                </div>
+                            </div>
+                            <div class="flex items-start p-4 bg-white/5 rounded-lg hover:bg-white/10 transition-all">
+                                <i class="fas fa-server text-green-400 text-xl mr-4 mt-1"></i>
+                                <div>
+                                    <div class="font-bold text-white mb-1">Backend Services</div>
+                                    <div class="text-sm text-gray-400">NestJS, FastAPI, Kubernetes</div>
+                                </div>
+                            </div>
+                            <div class="flex items-start p-4 bg-white/5 rounded-lg hover:bg-white/10 transition-all">
+                                <i class="fas fa-desktop text-pink-400 text-xl mr-4 mt-1"></i>
+                                <div>
+                                    <div class="font-bold text-white mb-1">Frontend</div>
+                                    <div class="text-sm text-gray-400">Next.js 14, React 18, Tailwind</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Performance Metrics -->
+                    <div class="glass-card rounded-2xl p-8">
+                        <h3 class="text-3xl font-bold text-white mb-6 flex items-center">
+                            <i class="fas fa-tachometer-alt mr-3 text-blue-400"></i>
+                            Performance Metrics
+                        </h3>
+                        <div class="space-y-6">
+                            <div>
+                                <div class="flex justify-between mb-2 text-white">
+                                    <span class="text-gray-400">API Response Time</span>
+                                    <span class="font-bold text-blue-400">&lt; 200ms</span>
+                                </div>
+                                <div class="metric-bar">
+                                    <div class="metric-fill" style="width: 90%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between mb-2 text-white">
+                                    <span class="text-gray-400">ML Inference Time</span>
+                                    <span class="font-bold text-purple-400">&lt; 1s</span>
+                                </div>
+                                <div class="metric-bar">
+                                    <div class="metric-fill" style="width: 85%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between mb-2 text-white">
+                                    <span class="text-gray-400">ZKP Generation</span>
+                                    <span class="font-bold text-indigo-400">&lt; 30s</span>
+                                </div>
+                                <div class="metric-bar">
+                                    <div class="metric-fill" style="width: 75%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between mb-2 text-white">
+                                    <span class="text-gray-400">Blockchain Confirmation</span>
+                                    <span class="font-bold text-cyan-400">&lt; 5s</span>
+                                </div>
+                                <div class="metric-bar">
+                                    <div class="metric-fill" style="width: 80%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between mb-2 text-white">
+                                    <span class="text-gray-400">System Uptime</span>
+                                    <span class="font-bold text-green-400">99.9%</span>
+                                </div>
+                                <div class="metric-bar">
+                                    <div class="metric-fill" style="width: 99%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Cost Breakdown -->
+                <div class="glass-card rounded-2xl p-8">
+                    <h3 class="text-3xl font-bold text-white mb-8 text-center flex items-center justify-center">
+                        <i class="fas fa-dollar-sign mr-3 text-green-400"></i>
+                        Monthly Cost Breakdown
+                    </h3>
+                    <div class="grid md:grid-cols-4 gap-6">
+                        <div class="text-center p-6 bg-gradient-to-br from-blue-500/20 to-blue-600/20 rounded-xl border border-blue-500/30">
+                            <i class="fas fa-cloud text-4xl text-blue-400 mb-4"></i>
+                            <div class="text-4xl font-bold text-white mb-2">$8,000</div>
+                            <div class="text-sm text-gray-400">AWS Infrastructure</div>
+                        </div>
+                        <div class="text-center p-6 bg-gradient-to-br from-purple-500/20 to-purple-600/20 rounded-xl border border-purple-500/30">
+                            <i class="fas fa-plug text-4xl text-purple-400 mb-4"></i>
+                            <div class="text-4xl font-bold text-white mb-2">$1,900</div>
+                            <div class="text-sm text-gray-400">Third-party Services</div>
+                        </div>
+                        <div class="text-center p-6 bg-gradient-to-br from-indigo-500/20 to-indigo-600/20 rounded-xl border border-indigo-500/30">
+                            <i class="fas fa-link text-4xl text-indigo-400 mb-4"></i>
+                            <div class="text-4xl font-bold text-white mb-2">$700-2.2k</div>
+                            <div class="text-sm text-gray-400">Blockchain & IPFS</div>
+                        </div>
+                        <div class="text-center p-6 bg-gradient-to-br from-green-500/20 to-green-600/20 rounded-xl border border-green-500/30">
+                            <i class="fas fa-chart-line text-4xl text-green-400 mb-4"></i>
+                            <div class="text-4xl font-bold text-white mb-2">$1-3k</div>
+                            <div class="text-sm text-gray-400">ML Training</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pragmatic MVP Details -->
+        <section id="pragmatic-mvp" class="py-20 bg-gradient-to-b from-[#0a0a0a] to-[#1a1a2e]">
+            <div class="container mx-auto px-4">
+                <div class="text-center mb-16">
+                    <div class="inline-block mb-6">
+                        <lottie-player
+                            src="https://assets4.lottiefiles.com/packages/lf20_v1yudlrx.json"
+                            background="transparent"
+                            speed="1"
+                            style="width: 150px; height: 150px;"
+                            loop
+                            autoplay>
+                        </lottie-player>
+                    </div>
+                    <h2 class="text-5xl md:text-6xl font-black gradient-text mb-4">
+                        Pragmatic MVP Architecture
+                    </h2>
+                    <p class="text-xl text-gray-400 max-w-3xl mx-auto">
+                        Fast, simple, and cost-effective solution to validate your idea
+                    </p>
+                </div>
+                
+                <div class="grid md:grid-cols-2 gap-8 mb-12">
+                    <!-- Tech Stack -->
+                    <div class="glass-card rounded-2xl p-8">
+                        <h3 class="text-3xl font-bold text-white mb-6 flex items-center">
+                            <i class="fas fa-code mr-3 text-green-400"></i>
+                            Tech Stack
+                        </h3>
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between p-4 bg-gradient-to-r from-green-500/10 to-teal-500/10 rounded-lg border border-green-500/20 hover:border-green-500/40 transition-all">
+                                <span class="font-medium text-white">Frontend</span>
+                                <span class="text-sm text-gray-400">Next.js 14 + shadcn/ui</span>
+                            </div>
+                            <div class="flex items-center justify-between p-4 bg-gradient-to-r from-green-500/10 to-teal-500/10 rounded-lg border border-green-500/20 hover:border-green-500/40 transition-all">
+                                <span class="font-medium text-white">Backend</span>
+                                <span class="text-sm text-gray-400">Node.js + tRPC + Prisma</span>
+                            </div>
+                            <div class="flex items-center justify-between p-4 bg-gradient-to-r from-green-500/10 to-teal-500/10 rounded-lg border border-green-500/20 hover:border-green-500/40 transition-all">
+                                <span class="font-medium text-white">Database</span>
+                                <span class="text-sm text-gray-400">PostgreSQL (Supabase)</span>
+                            </div>
+                            <div class="flex items-center justify-between p-4 bg-gradient-to-r from-green-500/10 to-teal-500/10 rounded-lg border border-green-500/20 hover:border-green-500/40 transition-all">
+                                <span class="font-medium text-white">IoT</span>
+                                <span class="text-sm text-gray-400">ESP32 + MicroPython</span>
+                            </div>
+                            <div class="flex items-center justify-between p-4 bg-gradient-to-r from-green-500/10 to-teal-500/10 rounded-lg border border-green-500/20 hover:border-green-500/40 transition-all">
+                                <span class="font-medium text-white">ML</span>
+                                <span class="text-sm text-gray-400">FastAPI + ONNX Runtime</span>
+                            </div>
+                            <div class="flex items-center justify-between p-4 bg-gradient-to-r from-green-500/10 to-teal-500/10 rounded-lg border border-green-500/20 hover:border-green-500/40 transition-all">
+                                <span class="font-medium text-white">Blockchain</span>
+                                <span class="text-sm text-gray-400">Polygon Mumbai</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Quick Start -->
+                    <div class="glass-card rounded-2xl p-8">
+                        <h3 class="text-3xl font-bold text-white mb-6 flex items-center">
+                            <i class="fas fa-rocket mr-3 text-green-400"></i>
+                            Quick Start
+                        </h3>
+                        <div class="code-block relative pt-8">
+                            <div class="absolute top-2 left-4 flex gap-2">
+                                <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                                <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                                <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                            </div>
+                            <div class="text-green-400 text-sm space-y-2 font-mono">
+                                <div class="typing-line">$ git clone intelledger-mvp</div>
+                                <div class="typing-line">$ npm install</div>
+                                <div class="typing-line">$ npx prisma migrate dev</div>
+                                <div class="typing-line">$ npm run dev</div>
+                                <div class="text-gray-500"># Flash ESP32 with Thonny</div>
+                                <div class="text-yellow-400 font-bold mt-4">✓ Live in 30 minutes! 🚀</div>
+                            </div>
+                        </div>
+                        <div class="mt-6 p-4 bg-green-500/20 border-l-4 border-green-500 rounded">
+                            <p class="text-sm text-green-300">
+                                <i class="fas fa-lightbulb mr-2"></i>
+                                <strong>Perfect for:</strong> Proof of concept, investor demos, early validation
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Key Metrics -->
+                <div class="grid md:grid-cols-3 gap-6">
+                    <div class="glass-card rounded-2xl p-8 text-center hover:scale-105 transition-all">
+                        <div class="text-6xl mb-4">⏱️</div>
+                        <div class="text-4xl font-bold text-green-400 mb-2">3-4 Months</div>
+                        <div class="text-gray-400">Time to MVP</div>
+                    </div>
+                    <div class="glass-card rounded-2xl p-8 text-center hover:scale-105 transition-all">
+                        <div class="text-6xl mb-4">👥</div>
+                        <div class="text-4xl font-bold text-green-400 mb-2">2-3 People</div>
+                        <div class="text-gray-400">Team Size</div>
+                    </div>
+                    <div class="glass-card rounded-2xl p-8 text-center hover:scale-105 transition-all">
+                        <div class="text-6xl mb-4">💵</div>
+                        <div class="text-4xl font-bold text-green-400 mb-2">$5/month</div>
+                        <div class="text-gray-400">+ $100 hardware</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ProofPerl Details -->
+        <section id="proofperl" class="py-20 bg-gradient-to-b from-[#1a1a2e] to-[#0a0a0a]">
+            <div class="container mx-auto px-4">
+                <div class="text-center mb-16">
+                    <div class="inline-block mb-6">
+                        <lottie-player
+                            src="https://assets3.lottiefiles.com/packages/lf20_qjosmx4w.json"
+                            background="transparent"
+                            speed="1"
+                            style="width: 150px; height: 150px;"
+                            loop
+                            autoplay>
+                        </lottie-player>
+                    </div>
+                    <h2 class="text-5xl md:text-6xl font-black gradient-text mb-4">
+                        ProofPerl Architecture
+                    </h2>
+                    <p class="text-xl text-gray-400 max-w-3xl mx-auto">
+                        Formally verified, mathematically proven security from silicon to smart contracts
+                    </p>
+                </div>
+                
+                <div class="grid md:grid-cols-2 gap-8 mb-12">
+                    <!-- Core Principles -->
+                    <div class="glass-card rounded-2xl p-8">
+                        <h3 class="text-3xl font-bold text-white mb-6 flex items-center">
+                            <i class="fas fa-shield-alt mr-3 text-orange-400"></i>
+                            Core Principles
+                        </h3>
+                        <div class="space-y-4">
+                            <div class="flex items-start p-4 bg-gradient-to-r from-orange-500/10 to-red-500/10 rounded-lg border border-orange-500/20">
+                                <i class="fas fa-check-circle text-orange-400 text-xl mr-4 mt-1"></i>
+                                <div>
+                                    <div class="font-bold text-white mb-1">Zero Trust</div>
+                                    <div class="text-sm text-gray-400">No component trusts any other by default</div>
+                                </div>
+                            </div>
+                            <div class="flex items-start p-4 bg-gradient-to-r from-orange-500/10 to-red-500/10 rounded-lg border border-orange-500/20">
+                                <i class="fas fa-calculator text-orange-400 text-xl mr-4 mt-1"></i>
+                                <div>
+                                    <div class="font-bold text-white mb-1">Formal Verification</div>
+                                    <div class="text-sm text-gray-400">Mathematical proofs of correctness</div>
+                                </div>
+                            </div>
+                            <div class="flex items-start p-4 bg-gradient-to-r from-orange-500/10 to-red-500/10 rounded-lg border border-orange-500/20">
+                                <i class="fas fa-sync text-orange-400 text-xl mr-4 mt-1"></i>
+                                <div>
+                                    <div class="font-bold text-white mb-1">Reproducibility</div>
+                                    <div class="text-sm text-gray-400">Bit-for-bit identical builds</div>
+                                </div>
+                            </div>
+                            <div class="flex items-start p-4 bg-gradient-to-r from-orange-500/10 to-red-500/10 rounded-lg border border-orange-500/20">
+                                <i class="fas fa-microchip text-orange-400 text-xl mr-4 mt-1"></i>
+                                <div>
+                                    <div class="font-bold text-white mb-1">Hardware Root of Trust</div>
+                                    <div class="text-sm text-gray-400">Security starts at silicon level</div>
+                                </div>
+                            </div>
+                            <div class="flex items-start p-4 bg-gradient-to-r from-orange-500/10 to-red-500/10 rounded-lg border border-orange-500/20">
+                                <i class="fas fa-code text-orange-400 text-xl mr-4 mt-1"></i>
+                                <div>
+                                    <div class="font-bold text-white mb-1">Type Safety</div>
+                                    <div class="text-sm text-gray-400">Compile-time guarantees</div>
+                                </div>
+                            </div>
+                            <div class="flex items-start p-4 bg-gradient-to-r from-orange-500/10 to-red-500/10 rounded-lg border border-orange-500/20">
+                                <i class="fas fa-compress text-orange-400 text-xl mr-4 mt-1"></i>
+                                <div>
+                                    <div class="font-bold text-white mb-1">Minimal Attack Surface</div>
+                                    <div class="text-sm text-gray-400">Unikernels, no unnecessary code</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Verification Stack -->
+                    <div class="glass-card rounded-2xl p-8">
+                        <h3 class="text-3xl font-bold text-white mb-6 flex items-center">
+                            <i class="fas fa-check-double mr-3 text-orange-400"></i>
+                            Verification Stack
+                        </h3>
+                        <div class="space-y-3">
+                            <div class="p-4 bg-white/5 rounded-lg border-l-4 border-orange-500">
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="font-bold text-white">Hardware</span>
+                                    <span class="text-xs text-orange-400">Yosys</span>
+                                </div>
+                                <div class="text-sm text-gray-400">Circuit correctness verification</div>
+                            </div>
+                            <div class="p-4 bg-white/5 rounded-lg border-l-4 border-red-500">
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="font-bold text-white">Firmware</span>
+                                    <span class="text-xs text-red-400">Kani</span>
+                                </div>
+                                <div class="text-sm text-gray-400">Memory safety proofs</div>
+                            </div>
+                            <div class="p-4 bg-white/5 rounded-lg border-l-4 border-pink-500">
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="font-bold text-white">OS Scheduler</span>
+                                    <span class="text-xs text-pink-400">TLA+</span>
+                                </div>
+                                <div class="text-sm text-gray-400">Liveness properties</div>
+                            </div>
+                            <div class="p-4 bg-white/5 rounded-lg border-l-4 border-purple-500">
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="font-bold text-white">Memory Allocator</span>
+                                    <span class="text-xs text-purple-400">Coq</span>
+                                </div>
+                                <div class="text-sm text-gray-400">Correctness proofs</div>
+                            </div>
+                            <div class="p-4 bg-white/5 rounded-lg border-l-4 border-indigo-500">
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="font-bold text-white">Smart Contracts</span>
+                                    <span class="text-xs text-indigo-400">Certora</span>
+                                </div>
+                                <div class="text-sm text-gray-400">Invariant verification</div>
+                            </div>
+                            <div class="p-4 bg-white/5 rounded-lg border-l-4 border-blue-500">
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="font-bold text-white">Cryptography</span>
+                                    <span class="text-xs text-blue-400">EasyCrypt</span>
+                                </div>
+                                <div class="text-sm text-gray-400">Security proofs</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Investment Breakdown -->
+                <div class="glass-card rounded-2xl p-8">
+                    <h3 class="text-3xl font-bold text-white mb-8 text-center flex items-center justify-center">
+                        <i class="fas fa-chart-pie mr-3 text-orange-400"></i>
+                        Investment Breakdown
+                    </h3>
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div>
+                            <h4 class="text-xl font-bold text-white mb-4">Development (18 months)</h4>
+                            <div class="space-y-3">
+                                <div class="flex justify-between items-center p-3 bg-white/5 rounded-lg">
+                                    <span class="text-gray-400">Team Salaries</span>
+                                    <span class="font-bold text-orange-400">$1.63M</span>
+                                </div>
+                                <div class="flex justify-between items-center p-3 bg-white/5 rounded-lg">
+                                    <span class="text-gray-400">Tooling & Licenses</span>
+                                    <span class="font-bold text-orange-400">$300k</span>
+                                </div>
+                                <div class="flex justify-between items-center p-3 bg-orange-500/20 rounded-lg border border-orange-500/50">
+                                    <span class="text-white font-bold">Total Setup</span>
+                                    <span class="font-bold text-orange-400 text-xl">$1.93M</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="text-xl font-bold text-white mb-4">Monthly Operations</h4>
+                            <div class="space-y-3">
+                                <div class="flex justify-between items-center p-3 bg-white/5 rounded-lg">
+                                    <span class="text-gray-400">Infrastructure</span>
+                                    <span class="font-bold text-orange-400">$2.7k</span>
+                                </div>
+                                <div class="flex justify-between items-center p-3 bg-white/5 rounded-lg">
+                                    <span class="text-gray-400">Blockchain</span>
+                                    <span class="font-bold text-orange-400">$1.1k</span>
+                                </div>
+                                <div class="flex justify-between items-center p-3 bg-orange-500/20 rounded-lg border border-orange-500/50">
+                                    <span class="text-white font-bold">Total Monthly</span>
+                                    <span class="font-bold text-orange-400 text-xl">$3.8k</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer / CTA Section -->
+        <section class="py-20 gradient-bg">
+            <div class="container mx-auto px-4 text-center">
+                <h2 class="text-5xl md:text-6xl font-black text-white mb-6">
+                    Ready to Build?
+                </h2>
+                <p class="text-xl text-white/80 mb-12 max-w-2xl mx-auto">
+                    Choose the architecture that fits your needs and start building the future of IoT
+                </p>
+                
+                <div class="flex flex-wrap justify-center gap-6 mb-16">
+                    <button class="glass-card px-10 py-5 rounded-full text-white font-bold text-lg hover:scale-110 transition-all pulse-glow">
+                        <i class="fas fa-download mr-2"></i> Download Specs
+                    </button>
+                    <button class="glass-card px-10 py-5 rounded-full text-white font-bold text-lg hover:scale-110 transition-all pulse-glow">
+                        <i class="fas fa-comments mr-2"></i> Talk to Expert
+                    </button>
+                    <button class="glass-card px-10 py-5 rounded-full text-white font-bold text-lg hover:scale-110 transition-all pulse-glow">
+                        <i class="fab fa-discord mr-2"></i> Join Community
+                    </button>
+                </div>
+                
+                <!-- Social Links -->
+                <div class="flex justify-center gap-6 mb-8">
+                    <a href="#" class="glass-card w-14 h-14 rounded-full flex items-center justify-center text-white hover:scale-110 transition-all">
+                        <i class="fab fa-github text-xl"></i>
+                    </a>
+                    <a href="#" class="glass-card w-14 h-14 rounded-full flex items-center justify-center text-white hover:scale-110 transition-all">
+                        <i class="fab fa-twitter text-xl"></i>
+                    </a>
+                    <a href="#" class="glass-card w-14 h-14 rounded-full flex items-center justify-center text-white hover:scale-110 transition-all">
+                        <i class="fab fa-discord text-xl"></i>
+                    </a>
+                    <a href="#" class="glass-card w-14 h-14 rounded-full flex items-center justify-center text-white hover:scale-110 transition-all">
+                        <i class="fab fa-linkedin text-xl"></i>
+                    </a>
+                </div>
+                
+                <p class="text-white/60 text-sm">
+                    © 2024 IntelLedger. Built with ❤️ for the future of IoT.
+                </p>
+            </div>
+        </section>
     </div>
+    
+    <script>
+        // Particles.js Configuration
+        particlesJS('particles-js', {
+            particles: {
+                number: { value: 80, density: { enable: true, value_area: 800 } },
+                color: { value: '#667eea' },
+                shape: { type: 'circle' },
+                opacity: { value: 0.5, random: false },
+                size: { value: 3, random: true },
+                line_linked: {
+                    enable: true,
+                    distance: 150,
+                    color: '#667eea',
+                    opacity: 0.4,
+                    width: 1
+                },
+                move: {
+                    enable: true,
+                    speed: 2,
+                    direction: 'none',
+                    random: false,
+                    straight: false,
+                    out_mode: 'out',
+                    bounce: false
+                }
+            },
+            interactivity: {
+                detect_on: 'canvas',
+                events: {
+                    onhover: { enable: true, mode: 'repulse' },
+                    onclick: { enable: true, mode: 'push' },
+                    resize: true
+                }
+            },
+            retina_detect: true
+        });
+
+        
+        // Anime.js Animations
+        anime.timeline({loop: false})
+            .add({
+                targets: '.hero-title',
+                opacity: [0, 1],
+                translateY: [50, 0],
+                duration: 1200,
+                easing: 'easeOutExpo'
+            })
+            .add({
+                targets: '.hero-subtitle',
+                opacity: [0, 1],
+                translateY: [30, 0],
+                duration: 1000,
+                easing: 'easeOutExpo'
+            }, '-=800')
+            .add({
+                targets: '.hero-description',
+                opacity: [0, 1],
+                translateY: [20, 0],
+                duration: 800,
+                easing: 'easeOutExpo'
+            }, '-=600')
+            .add({
+                targets: '.cta-button',
+                opacity: [0, 1],
+                scale: [0.8, 1],
+                duration: 600,
+                delay: anime.stagger(100),
+                easing: 'easeOutElastic(1, .8)'
+            }, '-=400')
+            .add({
+                targets: '.stats-grid > div',
+                opacity: [0, 1],
+                translateY: [30, 0],
+                duration: 800,
+                delay: anime.stagger(100),
+                easing: 'easeOutExpo'
+            }, '-=400');
+        
+        // Architecture Cards Animation
+        anime({
+            targets: '.architecture-cards > div',
+            opacity: [0, 1],
+            translateY: [50, 0],
+            delay: anime.stagger(200),
+            duration: 1000,
+            easing: 'easeOutExpo'
+        });
+        
+        // Section Title Animation on Scroll
+        const observerOptions = {
+            threshold: 0.2,
+            rootMargin: '0px 0px -100px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    anime({
+                        targets: entry.target,
+                        opacity: [0, 1],
+                        translateY: [30, 0],
+                        duration: 1000,
+                        easing: 'easeOutExpo'
+                    });
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+        
+        document.querySelectorAll('.section-title').forEach(el => {
+            el.style.opacity = '0';
+            observer.observe(el);
+        });
+        
+        // Counter Animation
+        function animateCounter(element) {
+            const target = parseInt(element.getAttribute('data-target'));
+            const duration = 2000;
+            const start = 0;
+            const increment = target / (duration / 16);
+            let current = start;
+            
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    element.textContent = target;
+                    clearInterval(timer);
+                } else {
+                    element.textContent = Math.floor(current);
+                }
+            }, 16);
+        }
+        
+        // Trigger counter animation when visible
+        const counterObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animateCounter(entry.target);
+                    counterObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+        
+        document.querySelectorAll('.counter').forEach(counter => {
+            counterObserver.observe(counter);
+        });
+        
+        // Typing Effect for Code Blocks
+        function typeWriter(element, text, speed = 50) {
+            let i = 0;
+            element.textContent = '';
+            
+            function type() {
+                if (i < text.length) {
+                    element.textContent += text.charAt(i);
+                    i++;
+                    setTimeout(type, speed);
+                }
+            }
+            type();
+        }
+        
+        // Smooth Scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+        
+        // Parallax Effect
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const parallaxElements = document.querySelectorAll('.floating');
+            
+            parallaxElements.forEach(el => {
+                const speed = 0.5;
+                el.style.transform = `translateY(${scrolled * speed}px)`;
+            });
+        });
+        
+        // Metric Bar Animation
+        const metricObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const fill = entry.target.querySelector('.metric-fill');
+                    const width = fill.style.width;
+                    fill.style.width = '0%';
+                    
+                    setTimeout(() => {
+                        fill.style.transition = 'width 1.5s ease-out';
+                        fill.style.width = width;
+                    }, 100);
+                    
+                    metricObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+        
+        document.querySelectorAll('.metric-bar').forEach(bar => {
+            metricObserver.observe(bar);
+        });
+        
+        // Tech Badge Hover Effect
+        document.querySelectorAll('.tech-badge').forEach(badge => {
+            badge.addEventListener('mouseenter', function() {
+                anime({
+                    targets: this,
+                    scale: 1.1,
+                    duration: 300,
+                    easing: 'easeOutElastic(1, .6)'
+                });
+            });
+            
+            badge.addEventListener('mouseleave', function() {
+                anime({
+                    targets: this,
+                    scale: 1,
+                    duration: 300,
+                    easing: 'easeOutElastic(1, .6)'
+                });
+            });
+        });
+        
+        // Card Hover 3D Effect
+        document.querySelectorAll('.glass-card').forEach(card => {
+            card.addEventListener('mousemove', function(e) {
+                const rect = this.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                
+                const rotateX = (y - centerY) / 10;
+                const rotateY = (centerX - x) / 10;
+                
+                this.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-10px)`;
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateY(0)';
+            });
+        });
+        
+        // Hide scroll indicator on scroll
+        window.addEventListener('scroll', () => {
+            const scrollIndicator = document.querySelector('.scroll-indicator');
+            if (scrollIndicator) {
+                if (window.pageYOffset > 100) {
+                    scrollIndicator.style.opacity = '0';
+                } else {
+                    scrollIndicator.style.opacity = '1';
+                }
+            }
+        });
+        
+        console.log('%c🚀 IntelLedger - Three Architectures', 'font-size: 20px; font-weight: bold; color: #667eea;');
+        console.log('%cBuilt with: Anime.js, Lottie, Particles.js, Tailwind CSS', 'font-size: 12px; color: #764ba2;');
+    </script>
 </body>
 </html>
